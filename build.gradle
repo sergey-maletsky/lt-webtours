@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+    // The following line allows to load io.gatling.gradle plugin and directly apply it
+    id 'io.gatling.gradle' version '3.9.0.1'
+}
+
+group 'com.maletsky'
+version '1.0-SNAPSHOT'
+
+gatling {
+  // WARNING: options below only work when logback config file isn't provided
+  logLevel = 'WARN' // logback root level
+  logHttp = 'NONE' // set to 'ALL' for all HTTP traffic in TRACE, 'FAILURES' for failed HTTP traffic in DEBUG
+  enterprise {
+    // Enterprise Cloud (https://cloud.gatling.io/) configuration reference: https://gatling.io/docs/gatling/reference/current/extensions/gradle_plugin/#working-with-gatling-enterprise-cloud
+    // Enterprise Self-Hosted configuration reference: https://gatling.io/docs/gatling/reference/current/extensions/gradle_plugin/#working-with-gatling-enterprise-self-hosted
+  }
+}
+
+repositories {
+  mavenCentral()
+}
+
+sourceSets {
+    gatling {
+        java {
+        }
+    }
+}
+
+dependencies {
+    gatlingImplementation 'org.slf4j:slf4j-simple:2.0.6'
+    gatlingImplementation 'org.jsoup:jsoup:1.15.3'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
