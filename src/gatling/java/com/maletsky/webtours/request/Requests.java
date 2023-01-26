@@ -5,14 +5,20 @@ import io.gatling.javaapi.core.ChainBuilder;
 import java.util.Map;
 
 import static com.maletsky.webtours.util.Constants.baseUrl;
+import static com.maletsky.webtours.util.RequestElements.findFlightParameters;
+import static com.maletsky.webtours.util.RequestElements.flightParameters;
+import static com.maletsky.webtours.util.RequestElements.loginParameters;
+import static com.maletsky.webtours.util.RequestElements.paymentFlightParameters;
 import static io.gatling.javaapi.core.CoreDsl.bodyString;
 import static io.gatling.javaapi.core.CoreDsl.css;
 import static io.gatling.javaapi.core.CoreDsl.exec;
+import static io.gatling.javaapi.core.CoreDsl.group;
 import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.http.HttpDsl.status;
 
 public final class Requests {
 
+    // headers
     private static final Map<CharSequence, String> loginHeaders = Map.ofEntries(
             Map.entry("Referer", baseUrl + "/cgi-bin/nav.pl?in=home"),
             Map.entry("Origin", baseUrl),
@@ -30,10 +36,14 @@ public final class Requests {
     }
 
     public static final ChainBuilder rootPage = exec(http("root_page").get("/webtours/"))
-            .exec(http("root_page_welcome").get("/cgi-bin/welcome.pl?signOff=true")
+            .exec(http("root_page_welcome")
+                    .get("/cgi-bin/welcome.pl")
+                    .queryParam("signOff", "true")
                     .header("Referer", baseUrl + "/webtours/")
                     .check(status().is(200)))
-            .exec(http("root_page_nav").get("/cgi-bin/nav.pl?in=home")
+            .exec(http("root_page_nav")
+                    .get("/cgi-bin/nav.pl")
+                    .queryParam("in", "home")
                     .header("Referer", baseUrl + "/cgi-bin/welcome.pl?signOff=true")
                     .check(status().is(200))
                     .check(css("input[name='userSession']", "value").saveAs("userSession")));
@@ -44,30 +54,37 @@ public final class Requests {
 
     public static final ChainBuilder login = exec(http("login_post").post("/cgi-bin/login.pl")
             .headers(loginHeaders)
-            .formParam("userSession", "#{userSession}")
-            .formParam("username", "#{login}")
-            .formParam("password", "#{password}")
-            .formParam("login.x", "58")
-            .formParam("login.y", "6")
-            .formParam("JSFormSubmit", "off")
+            .formParamMap(loginParameters)
             .check(status().is(200)))
 
-            .exec(http("login_get").get("/cgi-bin/login.pl?intro=true")
+            .exec(http("login_get")
+                    .get("/cgi-bin/login.pl")
+                    .queryParam("intro", "true")
                     .header("Referer", baseUrl + "/cgi-bin/login.pl")
                     .check(status().is(200)))
-            .exec(http("login_nav").get("/cgi-bin/nav.pl?page=menu&in=home")
+            .exec(http("login_nav")
+                    .get("/cgi-bin/nav.pl")
+                    .queryParam("page", "menu")
+                    .queryParam("in", "home")
                     .header("Referer", baseUrl + "/cgi-bin/login.pl")
                     .check(status().is(200))
             );
 
-    public static final ChainBuilder flights = exec(http("flights_welcome").get("/cgi-bin/welcome.pl?page=search")
+    public static final ChainBuilder flights = exec(http("flights_welcome")
+            .get("/cgi-bin/welcome.pl")
+            .queryParam("page", "search")
             .header("Referer", baseUrl + "/cgi-bin/nav.pl?page=menu&in=home")
             .check(status().is(200)))
 
-            .exec(http("flights_nav").get("/cgi-bin/nav.pl?page=menu&in=flights")
+            .exec(http("flights_nav")
+                    .get("/cgi-bin/nav.pl")
+                    .queryParam("page", "menu")
+                    .queryParam("in", "flights")
                     .header("Referer", baseUrl + "/cgi-bin/welcome.pl?page=search")
                     .check(status().is(200)))
-            .exec(http("flights_reservations").get("/cgi-bin/reservations.pl?page=welcome")
+            .exec(http("flights_reservations")
+                    .get("/cgi-bin/reservations.pl")
+                    .queryParam("page", "welcome")
                     .header("Referer", baseUrl + "/cgi-bin/welcome.pl?page=search")
                     .check(status().is(200))
                     .check(bodyString().saveAs("cities_body")))
@@ -81,21 +98,10 @@ public final class Requests {
                         Map.entry("returnDate", parser.getReturnDate())));
             });
 
-    public static final ChainBuilder paymentFlight = exec(http("finding_flight").post("/cgi-bin/reservations.pl")
+    public static final ChainBuilder paymentFlight = exec(http("finding_flight")
+            .post("/cgi-bin/reservations.pl")
             .headers(findFlightHeaders)
-            .formParam("advanceDiscount", "0")
-            .formParam("depart", "#{departureCity}")
-            .formParam("departDate", "#{departureDate}")
-            .formParam("arrive", "#{arrivalCity}")
-            .formParam("returnDate", "#{returnDate}")
-            .formParam("numPassengers", "1")
-            .formParam("seatPref", "None")
-            .formParam("seatType", "Coach")
-            .formParam("findFlights.x", "57")
-            .formParam("findFlights.y", "3")
-            .formParam(".cgifields", "roundtrip")
-            .formParam(".cgifields", "seatType")
-            .formParam(".cgifields", "seatPref")
+            .formParamMap(findFlightParameters)
             .check(status().is(200))
             .check(bodyString().saveAs("select_flight_body")))
 
@@ -103,47 +109,35 @@ public final class Requests {
                 final ContentParser parser = ContentParser.parse(session.getString("select_flight_body"));
                 return session.set("outboundFlight", parser.getOutboundFlight());
             })
-            .exec(http("select_flight").post("/cgi-bin/reservations.pl")
+            .exec(http("select_flight")
+                    .post("/cgi-bin/reservations.pl")
                     .headers(flightHeaders)
-                    .formParam("outboundFlight", "#{outboundFlight}")
-                    .formParam("numPassengers", "1")
-                    .formParam("advanceDiscount", "0")
-                    .formParam("seatType", "Coach")
-                    .formParam("seatPref", "None")
-                    .formParam("findFlights.x", "37")
-                    .formParam("findFlights.y", "9")
+                    .formParamMap(flightParameters)
                     .check(status().is(200))
                     .check(bodyString().saveAs("select_flight_body")))
+
             .exec(http("payment_flight").post("/cgi-bin/reservations.pl")
                     .headers(flightHeaders)
-                    .formParam("firstName", "Sergio")
-                    .formParam("lastName", "Maletti")
-                    .formParam("address1", "Via S. Mirocle, 7")
-                    .formParam("address2", "Milan")
-                    .formParam("pass1", "Sergio Maletti")
-                    .formParam("creditCard", "")
-                    .formParam("expDate", "")
-                    .formParam("oldCCOption", "")
-                    .formParam("numPassengers", "1")
-                    .formParam("seatType", "Coach")
-                    .formParam("seatPref", "None")
-                    .formParam("outboundFlight", "#{outboundFlight}")
-                    .formParam("advanceDiscount", "0")
-                    .formParam("returnFlight", "")
-                    .formParam("JSFormSubmit", "off")
-                    .formParam("buyFlights.x", "55")
-                    .formParam("buyFlights.y", "6")
-                    .formParam(".cgifields", "saveCC")
+                    .formParamMap(paymentFlightParameters)
                     .check(status().is(200))
                     .check(bodyString().saveAs("select_flight_body")));
 
-    public static final ChainBuilder homePage = exec(http("home_page").get("/cgi-bin/welcome.pl?page=menus")
+    public static final ChainBuilder homePage = exec(http("home_page")
+            .get("/cgi-bin/welcome.pl")
+            .queryParam("page", "menus")
             .header("Referer", baseUrl + "/cgi-bin/nav.pl?page=menu&in=itinerary")
             .check(status().is(200)))
-            .exec(http("home_page_intro").get("/cgi-bin/login.pl?intro=true")
+            .exec(http("home_page_intro")
+                    .get("/cgi-bin/login.pl")
+                    .queryParam("intro", "true")
                     .header("Referer", baseUrl + "/cgi-bin/welcome.pl?page=menus")
                     .check(status().is(200)))
-            .exec(http("home_page_nav").get("/cgi-bin/nav.pl?page=menu&in=home")
+            .exec(http("home_page_nav")
+                    .get("/cgi-bin/nav.pl")
+                    .queryParam("page", "menu")
+                    .queryParam("in", "home")
                     .header("Referer", baseUrl + "/cgi-bin/welcome.pl?page=menus")
                     .check(status().is(200)));
+
+    public static final ChainBuilder groupRootAndLogin = group("rootAndLogin").on(rootPage).exec(login);
 }
