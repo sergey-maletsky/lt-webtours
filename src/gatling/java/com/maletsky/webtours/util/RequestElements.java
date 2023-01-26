@@ -39,9 +39,7 @@ public final class RequestElements {
             Map.entry("seatType", "Coach"),
             Map.entry("findFlights.x", "57"),
             Map.entry("findFlights.y", "3"),
-            Map.entry(".cgifields", "roundtrip"),
-            Map.entry(".cgifields", "seatType"),
-            Map.entry(".cgifields", "seatPref"));   
+            Map.entry(".cgifields", "roundtrip"));
     public static final Map<String, Object> flightParameters = Map.ofEntries(
             Map.entry("outboundFlight", "#{outboundFlight}"),
             Map.entry("numPassengers", "1"),

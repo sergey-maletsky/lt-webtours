@@ -5,8 +5,11 @@ import io.gatling.javaapi.core.ChainBuilder;
 import java.util.Map;
 
 import static com.maletsky.webtours.util.Constants.baseUrl;
+import static com.maletsky.webtours.util.RequestElements.findFlightHeaders;
 import static com.maletsky.webtours.util.RequestElements.findFlightParameters;
+import static com.maletsky.webtours.util.RequestElements.flightHeaders;
 import static com.maletsky.webtours.util.RequestElements.flightParameters;
+import static com.maletsky.webtours.util.RequestElements.loginHeaders;
 import static com.maletsky.webtours.util.RequestElements.loginParameters;
 import static com.maletsky.webtours.util.RequestElements.paymentFlightParameters;
 import static io.gatling.javaapi.core.CoreDsl.bodyString;
@@ -17,20 +20,6 @@ import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.http.HttpDsl.status;
 
 public final class Requests {
-
-    // headers
-    private static final Map<CharSequence, String> loginHeaders = Map.ofEntries(
-            Map.entry("Referer", baseUrl + "/cgi-bin/nav.pl?in=home"),
-            Map.entry("Origin", baseUrl),
-            Map.entry("Content-Type", "application/x-www-form-urlencoded"));
-    private static final Map<CharSequence, String> findFlightHeaders = Map.ofEntries(
-            Map.entry("Referer", baseUrl + "/cgi-bin/reservations.pl?page=welcome"),
-            Map.entry("Origin", baseUrl),
-            Map.entry("Content-Type", "application/x-www-form-urlencoded"));
-    private static final Map<CharSequence, String> flightHeaders = Map.ofEntries(
-            Map.entry("Referer", baseUrl + "/cgi-bin/reservations.pl"),
-            Map.entry("Origin", baseUrl),
-            Map.entry("Content-Type", "application/x-www-form-urlencoded"));
 
     private Requests() {
     }
