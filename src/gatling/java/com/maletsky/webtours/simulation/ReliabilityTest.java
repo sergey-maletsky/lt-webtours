@@ -27,10 +27,10 @@ public class ReliabilityTest extends Simulation {
     {
         setUp(reliabilityTestWebToursBuilder)
 /*                .throttle(
-                        reachRps(100).in(10),
-                        holdFor(Duration.ofMinutes(20)),
-                        jumpToRps(80),
-                        holdFor(Duration.ofHours(1))
+                        reachRps(60).in(Duration.ofSeconds(60)),
+                        holdFor(Duration.ofMinutes(3))
+                     *//*   jumpToRps(60),
+                        holdFor(Duration.ofHours(1))*//*
                 )*/
                 .protocols(webToursProtocolBuilder)
                 // длительность теста = разгон + полка

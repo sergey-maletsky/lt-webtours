@@ -7,7 +7,7 @@ import java.time.Duration;
 
 import static com.maletsky.webtours.scenario.WebToursScenario.webTours;
 import static com.maletsky.webtours.util.Constants.baseUrl;
-import static com.maletsky.webtours.util.Constants.globalMaxDurationInSeconds;
+import static com.maletsky.webtours.util.Constants.stepTestDurationInSeconds;
 import static com.maletsky.webtours.util.Constants.intensity;
 import static com.maletsky.webtours.util.Constants.stagesNumber;
 import static com.maletsky.webtours.util.Constants.stepTestRampDurationInSeconds;
@@ -40,6 +40,6 @@ public class StepTest extends Simulation {
         setUp(stepTestWebToursBuilder)
                 .protocols(webToursProtocolBuilder)
                 // общая длительность теста
-                .maxDuration(Duration.ofSeconds(globalMaxDurationInSeconds));
+                .maxDuration(Duration.ofSeconds(stepTestDurationInSeconds));
     }
 }

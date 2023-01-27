@@ -1,0 +1,10 @@
+{
+  "simulation": "com.maletsky.webtours.simulation.Debug",
+  "simulationId": "debug-20230126183450965",
+  "start": 1674758092403,
+  "description": "",
+  "scenarios": ["WebTours"],
+  "assertions": [
+
+  ]
+}

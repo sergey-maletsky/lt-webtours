@@ -6,9 +6,11 @@ public final class Constants {
 
     // open model
     public static final double intensity = 80.0;
-    public static final double calculatedByReliabilityTestIntensity = 80.0;
     public static final int debugDurationInSeconds = Integer.getInteger("debugDuration", 30);
-    public static final int globalMaxDurationInSeconds = Integer.getInteger("globalMaxDuration", 30);
+    // максимальная производительность(UV/сек) на предыдущих тестах: 290, или 45 rps
+    // 20% от 290 = 58
+    public static final int calculatedByReliabilityTestIntensity = 290 - 58; // 80% макс. производительности
+    public static final int stepTestDurationInSeconds = Integer.getInteger("globalMaxDuration", 1200);
     public static final int stepTestStageDurationInSeconds = Integer.getInteger("stepTestStageDuration", 15);
     public static final int reliabilityTestStageDurationInMunites =
             Integer.getInteger("reliabilityTestStageDuration", 60);

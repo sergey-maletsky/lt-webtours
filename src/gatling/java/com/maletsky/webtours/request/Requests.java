@@ -102,14 +102,12 @@ public final class Requests {
                     .post("/cgi-bin/reservations.pl")
                     .headers(flightHeaders)
                     .formParamMap(flightParameters)
-                    .check(status().is(200))
-                    .check(bodyString().saveAs("select_flight_body")))
+                    .check(status().is(200)))
 
             .exec(http("payment_flight").post("/cgi-bin/reservations.pl")
                     .headers(flightHeaders)
                     .formParamMap(paymentFlightParameters)
-                    .check(status().is(200))
-                    .check(bodyString().saveAs("select_flight_body")));
+                    .check(status().is(200)));
 
     public static final ChainBuilder homePage = exec(http("home_page")
             .get("/cgi-bin/welcome.pl")
