@@ -1,20 +1,24 @@
-package com.maletsky.webtours.simulation;
+package com.maletsky.pochta.simulation;
 
 import io.gatling.javaapi.core.PopulationBuilder;
 import io.gatling.javaapi.core.Simulation;
 import java.time.Duration;
 
-import static com.maletsky.webtours.scenario.WebToursScenario.webTours;
-import static com.maletsky.webtours.simulation.StepTest.webToursProtocolBuilder;
-import static com.maletsky.webtours.util.Constants.calculatedByReliabilityTestIntensity;
-import static com.maletsky.webtours.util.Constants.reliabilityTestRampDurationInSeconds;
-import static com.maletsky.webtours.util.Constants.reliabilityTestStageDurationInMunites;
+import static com.maletsky.pochta.scenario.Scenario.SCENARIO_BUILDER;
+import static com.maletsky.pochta.simulation.StepTest.httpProtocolBuilder;
+import static com.maletsky.pochta.util.Constants.calculatedByReliabilityTestIntensity;
+import static com.maletsky.pochta.util.Constants.reliabilityTestRampDurationInSeconds;
+import static com.maletsky.pochta.util.Constants.reliabilityTestStageDurationInMunites;
 import static io.gatling.javaapi.core.CoreDsl.constantUsersPerSec;
 import static io.gatling.javaapi.core.CoreDsl.rampUsersPerSec;
 
 public class ReliabilityTest extends Simulation {
 
-    private static final PopulationBuilder reliabilityTestWebToursBuilder = webTours.injectOpen(
+    private static final PopulationBuilder reliabilityTestBuilder = SCENARIO_BUILDER.injectOpen(
+        /*    // разгон - определение максимальной производительности, играя с параметрами
+            rampUsersPerSec(1).to(calculatedByReliabilityTestIntensity)
+                    .during(reliabilityTestRampDurationInSeconds)
+            */
             // разгон
             rampUsersPerSec(0).to(calculatedByReliabilityTestIntensity)
                     .during(reliabilityTestRampDurationInSeconds),
@@ -25,14 +29,14 @@ public class ReliabilityTest extends Simulation {
     //rampUsers(users).during(duration));
 
     {
-        setUp(reliabilityTestWebToursBuilder)
+        setUp(reliabilityTestBuilder)
 /*                .throttle(
                         reachRps(60).in(Duration.ofSeconds(60)),
                         holdFor(Duration.ofMinutes(3))
                      *//*   jumpToRps(60),
                         holdFor(Duration.ofHours(1))*//*
                 )*/
-                .protocols(webToursProtocolBuilder)
+                .protocols(httpProtocolBuilder)
                 // длительность теста = разгон + полка
                 .maxDuration(Duration.ofSeconds(
                         reliabilityTestRampDurationInSeconds + reliabilityTestStageDurationInMunites * 60L))

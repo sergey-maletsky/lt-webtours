@@ -1,4 +1,4 @@
-package com.maletsky.webtours.config;
+package com.maletsky.pochta.config;
 
 import io.gatling.recorder.GatlingRecorder;
 import io.gatling.recorder.config.RecorderPropertiesBuilder;
@@ -11,7 +11,7 @@ public class Recorder {
     RecorderPropertiesBuilder props = new RecorderPropertiesBuilder()
       .simulationsFolder(IDEPathHelper.gradleSourcesDirectory.toString())
       .resourcesFolder(IDEPathHelper.gradleResourcesDirectory.toString())
-      .simulationPackage("com/maletsky/webtours")
+      .simulationPackage("com/maletsky/pochta")
       .simulationFormatJava();
 
     GatlingRecorder.fromMap(props.build(), Option.<Path> apply(IDEPathHelper.recorderConfigFile));

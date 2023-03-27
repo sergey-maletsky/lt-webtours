@@ -1,4 +1,4 @@
-package com.maletsky.webtours.config;
+package com.maletsky.pochta.config;
 
 import java.net.URISyntaxException;
 import java.nio.file.Path;

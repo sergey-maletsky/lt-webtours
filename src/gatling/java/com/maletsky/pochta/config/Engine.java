@@ -1,4 +1,4 @@
-package com.maletsky.webtours.config;
+package com.maletsky.pochta.config;
 
 import io.gatling.app.Gatling;
 import io.gatling.core.config.GatlingPropertiesBuilder;
