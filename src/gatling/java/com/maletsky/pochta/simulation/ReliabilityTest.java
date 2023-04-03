@@ -9,8 +9,12 @@ import static com.maletsky.pochta.simulation.StepTest.httpProtocolBuilder;
 import static com.maletsky.pochta.util.Constants.calculatedByReliabilityTestIntensity;
 import static com.maletsky.pochta.util.Constants.reliabilityTestRampDurationInSeconds;
 import static com.maletsky.pochta.util.Constants.reliabilityTestStageDurationInMunites;
+import static io.gatling.javaapi.core.CoreDsl.constantConcurrentUsers;
 import static io.gatling.javaapi.core.CoreDsl.constantUsersPerSec;
+import static io.gatling.javaapi.core.CoreDsl.holdFor;
+import static io.gatling.javaapi.core.CoreDsl.rampConcurrentUsers;
 import static io.gatling.javaapi.core.CoreDsl.rampUsersPerSec;
+import static io.gatling.javaapi.core.CoreDsl.reachRps;
 
 public class ReliabilityTest extends Simulation {
 
@@ -25,14 +29,16 @@ public class ReliabilityTest extends Simulation {
             // полка
             constantUsersPerSec(calculatedByReliabilityTestIntensity)
                     .during(Duration.ofMinutes(reliabilityTestStageDurationInMunites))
+
+       /* для closed    rampConcurrentUsers(1).to(180).during(Duration.ofSeconds(180)),
+            constantConcurrentUsers(180).during(Duration.ofMinutes(3))*/
     );
     //rampUsers(users).during(duration));
 
     {
         setUp(reliabilityTestBuilder)
-/*                .throttle(
-                        reachRps(60).in(Duration.ofSeconds(60)),
-                        holdFor(Duration.ofMinutes(3))
+/*                        setUp().throttle(
+                        reachRps(300).in(Duration.ofMinutes(1)), holdFor(Duration.ofSeconds(60)))
                      *//*   jumpToRps(60),
                         holdFor(Duration.ofHours(1))*//*
                 )*/
