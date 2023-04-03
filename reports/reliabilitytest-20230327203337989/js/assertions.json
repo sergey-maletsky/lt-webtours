@@ -1,0 +1,10 @@
+{
+  "simulation": "com.maletsky.pochta.simulation.ReliabilityTest",
+  "simulationId": "reliabilitytest-20230327203337989",
+  "start": 1679949222456,
+  "description": "",
+  "scenarios": ["Pochta"],
+  "assertions": [
+
+  ]
+}
